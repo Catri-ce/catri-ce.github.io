@@ -4,6 +4,8 @@
   <meta charset="UTF-8">
   <title>CATRICE — Galerie</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Fonts Apple SF Pro, Roboto, Segoe UI, Arial fallback -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500&display=swap">
   <style>
     html, body {
       height: 100%;
@@ -13,7 +15,11 @@
       overflow: hidden;
     }
     body {
-      font-family: Arial, sans-serif;
+      font-family: 
+        -apple-system, BlinkMacSystemFont, 
+        "Segoe UI", Roboto, Arial, 
+        "SF Pro Display", "SF Pro Text", 
+        sans-serif;
       min-height: 100vh;
       margin: 0;
       display: flex;
@@ -21,11 +27,24 @@
       align-items: stretch;
       overflow: hidden;
     }
-    h1 {
-      color: #222;
+    h1, .subtitle {
       text-align: center;
-      margin-top: 18px;
+      font-weight: 400;
+      letter-spacing: 0.04em;
+      margin-top: 24px;
       margin-bottom: 0;
+      font-family: inherit;
+    }
+    h1 {
+      font-size: 2.6rem;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      margin-bottom: 10px;
+    }
+    .subtitle {
+      font-size: 1.25rem;
+      color: #555;
+      margin-bottom: 18px;
     }
     .carousel-container {
       flex: 1 1 auto;
@@ -34,7 +53,7 @@
       align-items: center;
       justify-content: center;
       width: 100vw;
-      max-width: 1300px;
+      max-width: 1400px;
       margin: 0 auto;
       box-sizing: border-box;
       overflow: hidden;
@@ -43,8 +62,8 @@
       position: relative;
       width: 100vw;
       max-width: 1200px;
-      height: 90vh;
-      min-height: 240px;
+      height: 87vh;
+      min-height: 220px;
       margin: 0;
       overflow: hidden;
       display: flex;
@@ -53,31 +72,43 @@
       background: transparent;
       box-sizing: border-box;
     }
-    .carousel-track {
-      display: flex;
-      align-items: center;
-      transition: transform 0.7s cubic-bezier(.87,.15,.15,.91);
-      will-change: transform;
-      height: 100%;
-      overflow: visible;
-    }
     .carousel-slide {
-      position: relative;
-      width: 86vw;
-      max-width: 1100px;
-      min-width: 250px;
+      position: absolute;
+      top: 0; left: 50%;
+      transform: translateX(-50%) scale(1);
+      width: 92vw;
+      max-width: 1150px;
       height: 100%;
-      margin: 0 16px;
       display: flex;
       align-items: center;
       justify-content: center;
-      flex-shrink: 0;
+      opacity: 1;
+      transition: 
+        filter 0.52s cubic-bezier(.87,.15,.15,.91),
+        transform 0.67s cubic-bezier(.87,.15,.15,.91),
+        opacity 0.52s cubic-bezier(.87,.15,.15,.91);
       z-index: 2;
-      transition:
-        filter 0.5s cubic-bezier(.87,.15,.15,.91),
-        transform 0.7s cubic-bezier(.87,.15,.15,.91),
-        opacity 0.4s cubic-bezier(.87,.15,.15,.91);
       box-sizing: border-box;
+      pointer-events: none;
+    }
+    .carousel-slide.current {
+      filter: none;
+      z-index: 3;
+      opacity: 1;
+      transform: translateX(-50%) scale(1);
+      pointer-events: auto;
+    }
+    .carousel-slide.prev {
+      filter: blur(11px) grayscale(0.6) brightness(0.93);
+      opacity: 0.7;
+      transform: translateX(-90%) scale(0.84);
+      z-index: 1;
+    }
+    .carousel-slide.next {
+      filter: blur(11px) grayscale(0.6) brightness(0.93);
+      opacity: 0.7;
+      transform: translateX(-10%) scale(0.84);
+      z-index: 1;
     }
     .carousel-slide img {
       display: block;
@@ -94,30 +125,11 @@
       pointer-events: auto;
       transition: filter 0.4s;
     }
-    .carousel-slide.prev,
-    .carousel-slide.next {
-      filter: blur(13px) grayscale(0.6) brightness(0.93);
-      transform: scale(0.84) translateY(8px);
-      z-index: 1;
-      pointer-events: none;
-      opacity: 0.7;
-    }
-    .carousel-slide:not(.current) img {
-      pointer-events: none;
-    }
-    .carousel-slide.current {
-      filter: none;
-      z-index: 3;
-      transform: scale(1) translateY(0);
-      opacity: 1;
-    }
-    /* Flèches épaisses, noires, sans fond, style panneau routier, hors photo */
     .carousel-arrow {
       position: absolute;
       top: 50%;
       transform: translateY(-50%);
       background: none;
-      color: #111;
       border: none;
       width: 54px;
       height: 54px;
@@ -133,10 +145,12 @@
       transition: filter 0.15s, transform 0.2s, opacity 0.25s;
       box-shadow: none;
       overflow: visible;
+      pointer-events: auto;
     }
     .carousel-arrow[disabled] {
       opacity: 0;
       pointer-events: none;
+      transition: opacity 0.2s;
     }
     .carousel-arrow svg {
       display: block;
@@ -156,27 +170,11 @@
       filter: drop-shadow(0 0px 6px #8886);
       transform: scale(1.09);
     }
-    .carousel-arrow.left { left: 8px; }
-    .carousel-arrow.right { right: 8px; }
+    .carousel-arrow.left { left: 10px; }
+    .carousel-arrow.right { right: 10px; }
     .carousel-arrow:active {
       background: none;
       transform: translateY(-50%) scale(0.92);
-    }
-    @media (max-width: 1300px) {
-      .carousel-viewport { max-width: 99vw; }
-      .carousel-slide { width: 98vw; max-width: 99vw; }
-    }
-    @media (max-width: 900px) {
-      .carousel-viewport { height: 52vh; min-height: 110px; }
-      .carousel-slide { min-width: 90px; margin: 0 5px; }
-      .carousel-arrow { width: 28px; height: 28px; }
-      .carousel-arrow svg { width: 19px; height: 19px; stroke-width: 6px; }
-    }
-    @media (max-width: 600px) {
-      .carousel-viewport { height: 38vh; min-height: 50px; }
-      .carousel-slide { min-width: 40px; height: 100%; margin: 0 1px; }
-      .carousel-arrow { width: 19px; height: 19px; }
-      .carousel-arrow svg { width: 10px; height: 10px; stroke-width: 3px; }
     }
     #carousel-counter {
       text-align:center;
@@ -184,9 +182,28 @@
       font-size: 1rem;
       margin-top: 3px;
       user-select: none;
+      font-family: inherit;
+      letter-spacing: 0.05em;
     }
-    .carousel-viewport,
-    .carousel-container {
+    @media (max-width: 1300px) {
+      .carousel-viewport { max-width: 99vw; }
+      .carousel-slide { width: 99vw; max-width: 99vw; }
+    }
+    @media (max-width: 900px) {
+      .carousel-viewport { height: 55vh; min-height: 110px; }
+      .carousel-slide { width: 99vw; min-width: 60vw; }
+      .carousel-arrow { width: 28px; height: 28px; }
+      .carousel-arrow svg { width: 19px; height: 19px; stroke-width: 6px; }
+      h1 { font-size: 1.7rem; }
+      .subtitle { font-size: 1rem; }
+    }
+    @media (max-width: 600px) {
+      .carousel-viewport { height: 34vh; min-height: 50px; }
+      .carousel-slide { min-width: 40vw; }
+      .carousel-arrow { width: 19px; height: 19px; }
+      .carousel-arrow svg { width: 10px; height: 10px; stroke-width: 3px; }
+    }
+    .carousel-viewport, .carousel-container {
       margin-top: 0;
       margin-bottom: 0;
       padding-top: 0;
@@ -198,7 +215,7 @@
 </head>
 <body>
   <h1>CATRICE</h1>
-  <p style="text-align:center;margin:0 0 8px 0;">Bienvenue dans ma galerie !</p>
+  <div class="subtitle">Bienvenue dans ma galerie&nbsp;!</div>
   <div class="carousel-container">
     <button class="carousel-arrow left" aria-label="Précédente">
       <svg viewBox="0 0 48 48" fill="none">
@@ -206,7 +223,7 @@
       </svg>
     </button>
     <div class="carousel-viewport">
-      <div class="carousel-track" id="carousel-track"></div>
+      <!-- Slides will be injected here -->
     </div>
     <button class="carousel-arrow right" aria-label="Suivante">
       <svg viewBox="0 0 48 48" fill="none">
@@ -231,89 +248,64 @@
       }
     ];
 
-    const track = document.getElementById('carousel-track');
+    const viewport = document.querySelector('.carousel-viewport');
     const counter = document.getElementById('carousel-counter');
     const leftArrow = document.querySelector('.carousel-arrow.left');
     const rightArrow = document.querySelector('.carousel-arrow.right');
     let current = 0;
 
-    function getSlideWidth() {
-      let el = track.children[current];
-      if (!el && track.children[0]) el = track.children[0];
-      return el ? el.offsetWidth + 32 : window.innerWidth * 0.8; // marge 2x16px
-    }
-
+    // Render function
     function renderSlides() {
-      track.innerHTML = '';
+      viewport.innerHTML = '';
       for (let i = 0; i < images.length; i++) {
         const slide = document.createElement('div');
         slide.className = 'carousel-slide';
         if (i === current) slide.classList.add('current');
-        if (i === (current - 1) && current > 0) slide.classList.add('prev');
-        if (i === (current + 1) && current < images.length - 1) slide.classList.add('next');
+        if (i === current - 1) slide.classList.add('prev');
+        if (i === current + 1) slide.classList.add('next');
         const img = document.createElement('img');
         img.src = images[i].src;
         img.alt = images[i].alt;
         if (i === current) {
           img.tabIndex = 0;
-          img.setAttribute('aria-label','Photo affichée');
-        }
-        slide.appendChild(img);
-        track.appendChild(slide);
-
-        // Plein écran sur la photo centrale uniquement
-        if (i === current) {
+          img.setAttribute('aria-label', 'Photo affichée');
           img.onclick = () => {
             if (img.requestFullscreen) img.requestFullscreen();
             else if (img.webkitRequestFullscreen) img.webkitRequestFullscreen();
             else if (img.msRequestFullscreen) img.msRequestFullscreen();
           };
         }
+        slide.appendChild(img);
+        viewport.appendChild(slide);
       }
-      // Centrage parfait, pas de scrollbars
-      const slideWidth = getSlideWidth();
-      const viewport = document.querySelector('.carousel-viewport');
-      const viewportRect = viewport.getBoundingClientRect();
-      // Centrage horizontal
-      let offset = 0;
-      if (track.children[current]) {
-        const slideRect = track.children[current].getBoundingClientRect();
-        offset = slideRect.left + slideRect.width/2 - (viewportRect.left + viewportRect.width/2);
-      }
-      track.style.transform = `translateX(${-offset}px)`;
+      // Flèches activées/désactivées
+      if (current === 0) leftArrow.setAttribute('disabled', 'true');
+      else leftArrow.removeAttribute('disabled');
+      if (current === images.length - 1) rightArrow.setAttribute('disabled', 'true');
+      else rightArrow.removeAttribute('disabled');
+      // Compteur
       counter.textContent = `Photo ${current + 1} / ${images.length}`;
-      // Désactive les flèches en début/fin
-      if (current === 0) {
-        leftArrow.setAttribute('disabled', 'true');
-      } else {
-        leftArrow.removeAttribute('disabled');
-      }
-      if (current === images.length - 1) {
-        rightArrow.setAttribute('disabled', 'true');
-      } else {
-        rightArrow.removeAttribute('disabled');
-      }
     }
 
     function goTo(idx) {
-      if (idx < 0 || idx > images.length - 1) return;
+      if (idx < 0 || idx >= images.length) return;
       current = idx;
       renderSlides();
     }
 
     leftArrow.onclick = () => goTo(current - 1);
     rightArrow.onclick = () => goTo(current + 1);
-
     window.addEventListener('keydown', e => {
       if (e.key === 'ArrowLeft' && current > 0) goTo(current - 1);
       if (e.key === 'ArrowRight' && current < images.length - 1) goTo(current + 1);
     });
 
+    // Swipe mobile
     let startX = null;
-    track.addEventListener('touchstart', e => {
+    viewport.addEventListener('touchstart', e => {
       startX = e.touches[0].clientX;
     });
-    track.addEventListener('touchend', e => {
+    viewport.addEventListener('touchend', e => {
       if (startX === null) return;
       const dx = e.changedTouches[0].clientX - startX;
       if (dx > 60 && current > 0) goTo(current - 1);
@@ -321,11 +313,11 @@
       startX = null;
     });
 
-    // Centrage au redimensionnement
+    // Responsive: recalcule le centrage après redimensionnement
     window.addEventListener('resize', () => setTimeout(renderSlides, 50));
     window.addEventListener('DOMContentLoaded', () => {
       renderSlides();
-      setTimeout(renderSlides, 80);
+      setTimeout(renderSlides, 60);
     });
   </script>
 </body>
