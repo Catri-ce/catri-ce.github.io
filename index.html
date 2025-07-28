@@ -5,49 +5,75 @@
   <title>My Photography Portfolio</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <style>
-    body { font-family: Arial, sans-serif; margin: 40px; background: #f7f7f7; }
-    h1 { color: #222; text-align: center; }
+    html, body {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+      background: #f7f7f7;
+    }
+    body {
+      font-family: Arial, sans-serif;
+      min-height: 100vh;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+    }
+    h1 {
+      color: #222;
+      text-align: center;
+      margin-top: 32px;
+      margin-bottom: 8px;
+    }
     .carousel-container {
+      flex: 1 1 auto;
       display: flex;
       flex-direction: column;
       align-items: center;
-      position: relative;
-      width: 100%;
+      justify-content: center;
+      min-height: 0;
+      width: 100vw;
       max-width: 1300px;
       margin: 0 auto;
+      box-sizing: border-box;
     }
     .carousel-viewport {
       position: relative;
-      width: 100%;
+      width: 100vw;
       max-width: 1200px;
-      height: 600px;
+      height: 70vh;
+      min-height: 280px;
+      margin: 0;
       overflow: visible;
       display: flex;
       justify-content: center;
       align-items: center;
-      margin-bottom: 24px;
-      user-select: none;
-      touch-action: pan-y;
+      background: transparent;
+      box-sizing: border-box;
+      /* plus de fond blanc */
     }
     .carousel-track {
       display: flex;
       align-items: center;
-      transition: transform 0.6s cubic-bezier(.83,.11,.09,.91);
+      transition: transform 0.85s cubic-bezier(.87,.15,.15,.91);
       will-change: transform;
+      height: 100%;
     }
     .carousel-slide {
       position: relative;
       width: 60vw;
       max-width: 900px;
       min-width: 320px;
-      height: 520px;
+      height: 100%;
       margin: 0 24px;
       display: flex;
       align-items: center;
       justify-content: center;
       flex-shrink: 0;
       z-index: 2;
-      transition: filter 0.4s, transform 0.4s;
+      transition:
+        filter 0.65s cubic-bezier(.87,.15,.15,.91),
+        transform 0.85s cubic-bezier(.87,.15,.15,.91);
       box-sizing: border-box;
     }
     .carousel-slide img {
@@ -55,21 +81,23 @@
       height: 100%;
       object-fit: contain;
       border-radius: 12px;
-      box-shadow: 0 8px 32px rgba(0,0,0,0.2);
-      background: #fff;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.18);
+      background: #000;
       cursor: pointer;
       transition: box-shadow 0.2s;
       user-drag: none;
       user-select: none;
       pointer-events: auto;
+      display: block;
     }
     .carousel-slide.prev,
     .carousel-slide.next {
-      filter: blur(8px) grayscale(0.5) brightness(0.94);
-      transform: scale(0.85) translateY(20px);
+      filter: blur(12px) grayscale(0.6) brightness(0.94);
+      transform: scale(0.84) translateY(14px);
       z-index: 1;
       box-shadow: 0 2px 16px rgba(0,0,0,0.08);
       pointer-events: none;
+      opacity: 0.8;
     }
     .carousel-slide:not(.current) img {
       pointer-events: none;
@@ -78,73 +106,108 @@
       filter: none;
       z-index: 3;
       transform: scale(1) translateY(0);
+      opacity: 1;
     }
-    /* Flèches élégantes, hors zone photo */
+    /* Flèches noires, épaisses, style panneau routier, hors photo */
     .carousel-arrow {
       position: absolute;
       top: 50%;
       transform: translateY(-50%);
-      background: #fff;
+      background: none;
       color: #111;
       border: none;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-      border-radius: 50%;
       font-size: 2.7rem;
-      width: 56px;
-      height: 56px;
+      width: 52px;
+      height: 52px;
       display: flex;
       align-items: center;
       justify-content: center;
       cursor: pointer;
       z-index: 10;
-      transition: background 0.2s, box-shadow 0.2s;
       outline: none;
-      opacity: 0.97;
-      border: 2px solid #111;
+      opacity: 1;
+      transition: background 0.18s, transform 0.25s;
+      padding: 0;
+      margin: 0;
     }
-    .carousel-arrow:active,
-    .carousel-arrow:focus {
-      background: #ddd;
-      box-shadow: 0 2px 16px rgba(0,0,0,0.18);
+    .carousel-arrow svg {
+      display: block;
+      stroke: #111;
+      stroke-width: 8px;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      width: 44px;
+      height: 44px;
+      background: none;
+      filter: drop-shadow(0 1px 2px #fff8);
+      pointer-events: none;
     }
-    .carousel-arrow.left { left: -70px; }
-    .carousel-arrow.right { right: -70px; }
+    .carousel-arrow:hover svg,
+    .carousel-arrow:focus svg {
+      stroke: #222;
+      filter: drop-shadow(0 0px 6px #8886);
+      transform: scale(1.09);
+    }
+    .carousel-arrow.left { left: -62px; }
+    .carousel-arrow.right { right: -62px; }
+    .carousel-arrow:active {
+      background: none;
+      transform: translateY(-50%) scale(0.95);
+    }
     /* Responsive */
     @media (max-width: 1300px) {
-      .carousel-viewport { max-width: 98vw; }
+      .carousel-viewport { max-width: 99vw; }
       .carousel-slide { width: 70vw; max-width: 98vw; }
-      .carousel-arrow.left { left: -20px; }
-      .carousel-arrow.right { right: -20px; }
+      .carousel-arrow.left { left: 0px; }
+      .carousel-arrow.right { right: 0px; }
     }
     @media (max-width: 900px) {
-      .carousel-viewport { height: 360px; }
-      .carousel-slide { min-width: 180px; height: 220px; }
-      .carousel-arrow { font-size: 2rem; width: 40px; height: 40px; }
+      .carousel-viewport { height: 38vh; min-height: 140px; }
+      .carousel-slide { min-width: 140px; }
+      .carousel-arrow { font-size: 1.6rem; width: 33px; height: 33px; }
+      .carousel-arrow svg { width: 28px; height: 28px; stroke-width: 6px; }
     }
     @media (max-width: 600px) {
-      .carousel-viewport { height: 180px; }
-      .carousel-slide { min-width: 110px; height: 120px; margin: 0 8px; }
-      .carousel-arrow { font-size: 1.5rem; width: 30px; height: 30px; }
+      .carousel-viewport { height: 26vh; min-height: 60px; }
+      .carousel-slide { min-width: 60px; height: 100%; margin: 0 5px; }
+      .carousel-arrow { font-size: 1.1rem; width: 25px; height: 25px; }
+      .carousel-arrow svg { width: 15px; height: 15px; stroke-width: 4px; }
     }
     #carousel-counter {
       text-align:center;
       color:#666;
       font-size: 1rem;
-      margin-top: -12px;
+      margin-top: 3px;
     }
+    /* Supprime les marges verticales du container pour coller la photo */
+    .carousel-viewport,
+    .carousel-container {
+      margin-top: 0;
+      margin-bottom: 0;
+      padding-top: 0;
+      padding-bottom: 0;
+    }
+    /* Supprime le padding du body pour pas d'espace vertical */
+    body { padding-top: 0; padding-bottom: 0; }
   </style>
 </head>
 <body>
   <h1>CATRICE</h1>
   <p style="text-align:center;">Bienvenue dans ma galerie !</p>
   <div class="carousel-container">
-    <button class="carousel-arrow left" aria-label="Précédente">&#8592;</button>
+    <button class="carousel-arrow left" aria-label="Précédente">
+      <svg viewBox="0 0 48 48" fill="none">
+        <polyline points="32,8 16,24 32,40" />
+      </svg>
+    </button>
     <div class="carousel-viewport">
-      <div class="carousel-track" id="carousel-track">
-        <!-- Slides generated by JS -->
-      </div>
+      <div class="carousel-track" id="carousel-track"></div>
     </div>
-    <button class="carousel-arrow right" aria-label="Suivante">&#8594;</button>
+    <button class="carousel-arrow right" aria-label="Suivante">
+      <svg viewBox="0 0 48 48" fill="none">
+        <polyline points="16,8 32,24 16,40" />
+      </svg>
+    </button>
     <div id="carousel-counter"></div>
   </div>
   <script>
@@ -196,13 +259,14 @@
         }
       }
       // Positionne le track pour le slide courant (effet glissement)
-      const slideWidth = track.children[current].offsetWidth + 48; // 48 = 2x24px margin
-      track.style.transform = `translateX(calc(50% - ${(current + 0.5) * slideWidth}px))`;
+      const slideEl = track.children[current];
+      if (!slideEl) return;
+      const slideWidth = slideEl.offsetWidth + 48; // 48 = 2x24px margin
+      track.style.transform = `translateX(calc(50vw - ${(current + 0.5) * slideWidth}px))`;
       counter.textContent = `Photo ${current + 1} / ${images.length}`;
     }
 
     function goTo(idx) {
-      // Boucle
       current = (idx + images.length) % images.length;
       renderSlides();
     }
