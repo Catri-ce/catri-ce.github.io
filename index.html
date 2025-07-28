@@ -10,24 +10,44 @@
     .gallery {
       display: flex;
       flex-wrap: wrap;
-      gap: 20px;
-      justify-content: center; /* Ajouté pour centrer */
+      gap: 16px;
+      justify-content: center;
     }
     .gallery img {
       width: 1200px;
       max-width: 100%;
       border-radius: 8px;
       box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      cursor: pointer; /* Ajoute une main pour indiquer le clic */
+      transition: box-shadow 0.2s;
+    }
+    .gallery img:hover {
+      box-shadow: 0 4px 16px rgba(0,0,0,0.2);
     }
   </style>
 </head>
 <body>
-  <h1>My Photography Portfolio</h1>
+  <h1>CATRICE</h1>
   <p>Bienvenue dans ma galerie !</p>
   <div class="gallery">
-    <img src="https://raw.githubusercontent.com/Catri-ce/catri-ce.github.io/main/_MG_8401.jpg" >
-    <img src="https://raw.githubusercontent.com/Catri-ce/catri-ce.github.io/main/_MG_8801.jpg" >
-    <img src="https://raw.githubusercontent.com/Catri-ce/catri-ce.github.io/main/_MG_8193.jpg" >
+    <img src="https://raw.githubusercontent.com/Catri-ce/catri-ce.github.io/main/_MG_8401.jpg" alt="Photo 1">
+    <img src="https://raw.githubusercontent.com/Catri-ce/catri-ce.github.io/main/_MG_8801.jpg" alt="Photo 2">
+    <img src="https://raw.githubusercontent.com/Catri-ce/catri-ce.github.io/main/_MG_8193.jpg" alt="Photo 3">
   </div>
+  <script>
+    // Sélectionne toutes les images de la galerie
+    document.querySelectorAll('.gallery img').forEach(img => {
+      img.addEventListener('click', () => {
+        // Passe l’image en plein écran quand on clique dessus
+        if (img.requestFullscreen) {
+          img.requestFullscreen();
+        } else if (img.webkitRequestFullscreen) { // Safari
+          img.webkitRequestFullscreen();
+        } else if (img.msRequestFullscreen) { // IE11
+          img.msRequestFullscreen();
+        }
+      });
+    });
+  </script>
 </body>
 </html>
