@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>My Photography Portfolio</title>
+  <title>CATRICE — Galerie</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <style>
     html, body {
@@ -50,7 +50,6 @@
       align-items: center;
       background: transparent;
       box-sizing: border-box;
-      /* plus de fond blanc */
     }
     .carousel-track {
       display: flex;
@@ -73,7 +72,8 @@
       z-index: 2;
       transition:
         filter 0.65s cubic-bezier(.87,.15,.15,.91),
-        transform 0.85s cubic-bezier(.87,.15,.15,.91);
+        transform 0.85s cubic-bezier(.87,.15,.15,.91),
+        opacity 0.4s cubic-bezier(.87,.15,.15,.91);
       box-sizing: border-box;
     }
     .carousel-slide img {
@@ -92,12 +92,12 @@
     }
     .carousel-slide.prev,
     .carousel-slide.next {
-      filter: blur(12px) grayscale(0.6) brightness(0.94);
+      filter: blur(14px) grayscale(0.6) brightness(0.93);
       transform: scale(0.84) translateY(14px);
       z-index: 1;
       box-shadow: 0 2px 16px rgba(0,0,0,0.08);
       pointer-events: none;
-      opacity: 0.8;
+      opacity: 0.7;
     }
     .carousel-slide:not(.current) img {
       pointer-events: none;
@@ -133,7 +133,7 @@
     .carousel-arrow svg {
       display: block;
       stroke: #111;
-      stroke-width: 8px;
+      stroke-width: 12px;
       stroke-linecap: round;
       stroke-linejoin: round;
       width: 44px;
@@ -165,7 +165,7 @@
       .carousel-viewport { height: 38vh; min-height: 140px; }
       .carousel-slide { min-width: 140px; }
       .carousel-arrow { font-size: 1.6rem; width: 33px; height: 33px; }
-      .carousel-arrow svg { width: 28px; height: 28px; stroke-width: 6px; }
+      .carousel-arrow svg { width: 28px; height: 28px; stroke-width: 7px; }
     }
     @media (max-width: 600px) {
       .carousel-viewport { height: 26vh; min-height: 60px; }
@@ -187,7 +187,6 @@
       padding-top: 0;
       padding-bottom: 0;
     }
-    /* Supprime le padding du body pour pas d'espace vertical */
     body { padding-top: 0; padding-bottom: 0; }
   </style>
 </head>
@@ -230,6 +229,13 @@
     const counter = document.getElementById('carousel-counter');
     let current = 0;
 
+    function getSlideWidth() {
+      // Trouve la largeur du slide courant ou d'un autre slide (pour le tout premier rendu)
+      let el = track.children[current];
+      if (!el && track.children[0]) el = track.children[0];
+      return el ? el.offsetWidth + 48 : 500; // marge 2x24px
+    }
+
     // Génère les slides
     function renderSlides() {
       track.innerHTML = '';
@@ -259,9 +265,7 @@
         }
       }
       // Positionne le track pour le slide courant (effet glissement)
-      const slideEl = track.children[current];
-      if (!slideEl) return;
-      const slideWidth = slideEl.offsetWidth + 48; // 48 = 2x24px margin
+      const slideWidth = getSlideWidth();
       track.style.transform = `translateX(calc(50vw - ${(current + 0.5) * slideWidth}px))`;
       counter.textContent = `Photo ${current + 1} / ${images.length}`;
     }
@@ -295,10 +299,13 @@
     });
 
     // Responsive: recalcule la position du track après redimensionnement
-    window.addEventListener('resize', () => setTimeout(renderSlides, 100));
+    window.addEventListener('resize', () => setTimeout(renderSlides, 50));
 
-    // Initialisation
-    renderSlides();
+    // Initialisation après le premier layout pour éviter le bug de position
+    window.addEventListener('DOMContentLoaded', () => {
+      renderSlides();
+      setTimeout(renderSlides, 50); // Relance après rendu pour bon centrage initial
+    });
   </script>
 </body>
 </html>
