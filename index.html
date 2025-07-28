@@ -43,8 +43,8 @@
       position: relative;
       width: 100vw;
       max-width: 1200px;
-      height: 72vh;
-      min-height: 200px;
+      height: 90vh;
+      min-height: 240px;
       margin: 0;
       overflow: hidden;
       display: flex;
@@ -63,11 +63,11 @@
     }
     .carousel-slide {
       position: relative;
-      width: 58vw;
-      max-width: 900px;
-      min-width: 240px;
+      width: 86vw;
+      max-width: 1100px;
+      min-width: 250px;
       height: 100%;
-      margin: 0 18px;
+      margin: 0 16px;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -96,7 +96,7 @@
     }
     .carousel-slide.prev,
     .carousel-slide.next {
-      filter: blur(12px) grayscale(0.6) brightness(0.93);
+      filter: blur(13px) grayscale(0.6) brightness(0.93);
       transform: scale(0.84) translateY(8px);
       z-index: 1;
       pointer-events: none;
@@ -119,8 +119,8 @@
       background: none;
       color: #111;
       border: none;
-      width: 48px;
-      height: 48px;
+      width: 54px;
+      height: 54px;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -130,9 +130,13 @@
       opacity: 1;
       padding: 0;
       margin: 0;
-      transition: filter 0.15s, transform 0.2s;
+      transition: filter 0.15s, transform 0.2s, opacity 0.25s;
       box-shadow: none;
       overflow: visible;
+    }
+    .carousel-arrow[disabled] {
+      opacity: 0;
+      pointer-events: none;
     }
     .carousel-arrow svg {
       display: block;
@@ -140,8 +144,8 @@
       stroke-width: 13px;
       stroke-linecap: round;
       stroke-linejoin: round;
-      width: 40px;
-      height: 40px;
+      width: 42px;
+      height: 42px;
       background: none;
       filter: drop-shadow(0 1px 2px #fff5);
       pointer-events: none;
@@ -158,19 +162,19 @@
       background: none;
       transform: translateY(-50%) scale(0.92);
     }
-    @media (max-width: 1100px) {
+    @media (max-width: 1300px) {
       .carousel-viewport { max-width: 99vw; }
-      .carousel-slide { width: 74vw; max-width: 99vw; }
+      .carousel-slide { width: 98vw; max-width: 99vw; }
     }
     @media (max-width: 900px) {
-      .carousel-viewport { height: 41vh; min-height: 110px; }
-      .carousel-slide { min-width: 90px; margin: 0 7px; }
+      .carousel-viewport { height: 52vh; min-height: 110px; }
+      .carousel-slide { min-width: 90px; margin: 0 5px; }
       .carousel-arrow { width: 28px; height: 28px; }
       .carousel-arrow svg { width: 19px; height: 19px; stroke-width: 6px; }
     }
     @media (max-width: 600px) {
-      .carousel-viewport { height: 28vh; min-height: 50px; }
-      .carousel-slide { min-width: 40px; height: 100%; margin: 0 2px; }
+      .carousel-viewport { height: 38vh; min-height: 50px; }
+      .carousel-slide { min-width: 40px; height: 100%; margin: 0 1px; }
       .carousel-arrow { width: 19px; height: 19px; }
       .carousel-arrow svg { width: 10px; height: 10px; stroke-width: 3px; }
     }
@@ -181,13 +185,13 @@
       margin-top: 3px;
       user-select: none;
     }
-    /* Supprime toute marges/paddings autour de la zone carousel */
     .carousel-viewport,
     .carousel-container {
       margin-top: 0;
       margin-bottom: 0;
       padding-top: 0;
       padding-bottom: 0;
+      overflow: hidden;
     }
     body { padding-top: 0; padding-bottom: 0; }
   </style>
@@ -229,12 +233,14 @@
 
     const track = document.getElementById('carousel-track');
     const counter = document.getElementById('carousel-counter');
+    const leftArrow = document.querySelector('.carousel-arrow.left');
+    const rightArrow = document.querySelector('.carousel-arrow.right');
     let current = 0;
 
     function getSlideWidth() {
       let el = track.children[current];
       if (!el && track.children[0]) el = track.children[0];
-      return el ? el.offsetWidth + 36 : window.innerWidth * 0.6; // marge 2x18px
+      return el ? el.offsetWidth + 32 : window.innerWidth * 0.8; // marge 2x16px
     }
 
     function renderSlides() {
@@ -243,8 +249,8 @@
         const slide = document.createElement('div');
         slide.className = 'carousel-slide';
         if (i === current) slide.classList.add('current');
-        if (i === (current - 1 + images.length) % images.length) slide.classList.add('prev');
-        if (i === (current + 1) % images.length) slide.classList.add('next');
+        if (i === (current - 1) && current > 0) slide.classList.add('prev');
+        if (i === (current + 1) && current < images.length - 1) slide.classList.add('next');
         const img = document.createElement('img');
         img.src = images[i].src;
         img.alt = images[i].alt;
@@ -264,7 +270,7 @@
           };
         }
       }
-      // Centrage parfait, sans scrollbars
+      // Centrage parfait, pas de scrollbars
       const slideWidth = getSlideWidth();
       const viewport = document.querySelector('.carousel-viewport');
       const viewportRect = viewport.getBoundingClientRect();
@@ -276,19 +282,31 @@
       }
       track.style.transform = `translateX(${-offset}px)`;
       counter.textContent = `Photo ${current + 1} / ${images.length}`;
+      // Désactive les flèches en début/fin
+      if (current === 0) {
+        leftArrow.setAttribute('disabled', 'true');
+      } else {
+        leftArrow.removeAttribute('disabled');
+      }
+      if (current === images.length - 1) {
+        rightArrow.setAttribute('disabled', 'true');
+      } else {
+        rightArrow.removeAttribute('disabled');
+      }
     }
 
     function goTo(idx) {
-      current = (idx + images.length) % images.length;
+      if (idx < 0 || idx > images.length - 1) return;
+      current = idx;
       renderSlides();
     }
 
-    document.querySelector('.carousel-arrow.left').onclick = () => goTo(current - 1);
-    document.querySelector('.carousel-arrow.right').onclick = () => goTo(current + 1);
+    leftArrow.onclick = () => goTo(current - 1);
+    rightArrow.onclick = () => goTo(current + 1);
 
     window.addEventListener('keydown', e => {
-      if (e.key === 'ArrowLeft') goTo(current - 1);
-      if (e.key === 'ArrowRight') goTo(current + 1);
+      if (e.key === 'ArrowLeft' && current > 0) goTo(current - 1);
+      if (e.key === 'ArrowRight' && current < images.length - 1) goTo(current + 1);
     });
 
     let startX = null;
@@ -298,16 +316,16 @@
     track.addEventListener('touchend', e => {
       if (startX === null) return;
       const dx = e.changedTouches[0].clientX - startX;
-      if (dx > 60) goTo(current - 1);
-      else if (dx < -60) goTo(current + 1);
+      if (dx > 60 && current > 0) goTo(current - 1);
+      else if (dx < -60 && current < images.length - 1) goTo(current + 1);
       startX = null;
     });
 
-    // Toujours centré, même au redimensionnement
+    // Centrage au redimensionnement
     window.addEventListener('resize', () => setTimeout(renderSlides, 50));
     window.addEventListener('DOMContentLoaded', () => {
       renderSlides();
-      setTimeout(renderSlides, 80); // double check au cas où
+      setTimeout(renderSlides, 80);
     });
   </script>
 </body>
