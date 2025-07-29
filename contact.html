@@ -10,17 +10,15 @@
 
   <style>
     html, body {
-      height: 100%;
       margin: 0;
       padding: 0;
       background: #000000;
       font-family: 'Montserrat', Arial, sans-serif;
       color: #f7f7f7;
-      box-sizing: border-box;
+      height: 100%;
     }
 
     body {
-      min-height: 100vh;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -33,7 +31,6 @@
       align-items: center;
       margin-top: 24px;
       margin-bottom: 20px;
-      gap: 2px;
       user-select: none;
     }
 
@@ -46,6 +43,7 @@
       line-height: 1.1;
       text-shadow: 0 1px 10px #0004;
       text-transform: uppercase;
+      text-align: center;
     }
 
     .nav-links {
@@ -123,6 +121,16 @@
       }
     }
 
+    .contact-container {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 100%;
+      padding: 20px;
+      box-sizing: border-box;
+    }
+
     .contact-box {
       max-width: 600px;
       background: #000000;
@@ -161,21 +169,22 @@
     <h1>CATRICE</h1>
   </div>
 
-  <div class="contact-box">
-    <h1>Contact</h1>
-    <p>
-      Vous pouvez me joindre à l'adresse suivante :<br />
-      <strong>oscar.paoletti4@gmail.com</strong><br /><br />
-      Ou par téléphone :<br />
-      <strong>+33 7 88 76 26 60</strong><br /><br />
-      Retrouvez-moi aussi sur les réseaux sociaux :<br />
-      <a href="https://www.instagram.com/projet.catrice/" target="_blank" style="color:#9aa0c4; text-decoration:none;">Instagram</a> | 
-      <a href="https://soundcloud.com/user-649198552" target="_blank" style="color:#9aa0c4; text-decoration:none;">Soundcloud</a>
-    </p>
+  <div class="contact-container">
+    <div class="contact-box">
+      <h2>Contact</h2>
+      <p>
+        Vous pouvez me joindre à l'adresse suivante :<br />
+        <strong>oscar.paoletti4@gmail.com</strong><br /><br />
+        Ou par téléphone :<br />
+        <strong>+33 7 88 76 26 60</strong><br /><br />
+        Retrouvez-moi aussi sur les réseaux sociaux :<br />
+        <a href="https://www.instagram.com/projet.catrice/" target="_blank" style="color:#9aa0c4; text-decoration:none;">Instagram</a> | 
+        <a href="https://soundcloud.com/user-649198552" target="_blank" style="color:#9aa0c4; text-decoration:none;">Soundcloud</a>
+      </p>
+    </div>
   </div>
 
   <script>
-    // Menu burger mobile
     const menuToggle = document.getElementById('menu-toggle');
     const navLinks = document.getElementById('nav-links');
 
