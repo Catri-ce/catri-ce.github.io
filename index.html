@@ -15,29 +15,55 @@
       padding: 0;
       background: #000000;
       font-family: 'Montserrat', Arial, sans-serif;
+      color: #f7f7f7;
     }
 
-    body {
-      min-height: 100vh;
-      margin: 0;
+    /* Conteneur du header et menu */
+    .header-container {
       display: flex;
-      flex-direction: column;
-      align-items: stretch;
+      align-items: center;
+      justify-content: space-between;
+      padding: 15px 20px;
+      max-width: 1200px;
+      margin: 0 auto;
+      box-sizing: border-box;
+      flex-wrap: wrap;
     }
 
+    /* Menu de navigation */
+    .nav-menu {
+      display: flex;
+      gap: 25px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .nav-menu a {
+      color: #f7f7f7;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 1rem;
+      transition: color 0.2s;
+    }
+    .nav-menu a:hover,
+    .nav-menu a:focus {
+      color: #9aa0c4;
+      outline: none;
+    }
+
+    /* Zone titre + sous-titre */
     .header-box {
-      position: relative; /* pour positionner la nav */
       display: flex;
       flex-direction: column;
       align-items: center;
-      margin-top: 24px;
-      margin-bottom: 10px;
       gap: 2px;
       user-select: none;
+      flex-grow: 1;
+      min-width: 200px;
+      text-align: center;
     }
 
     h1, .subtitle {
-      text-align: center;
       margin: 0;
       font-family: inherit;
     }
@@ -62,88 +88,7 @@
       text-shadow: 0 1px 6px #0003;
     }
 
-    /* ----------- NAVIGATION ----------- */
-
-    .nav-links {
-      position: absolute;
-      top: 20px;
-      left: 20px;
-      display: flex;
-      gap: 16px;
-      font-weight: 500;
-    }
-
-    .nav-links a {
-      color: #f7f7f7;
-      text-decoration: none;
-      font-size: 0.95rem;
-      padding: 6px 10px;
-      border-radius: 6px;
-      transition: background 0.2s;
-      user-select: none;
-    }
-
-    .nav-links a:hover {
-      background: rgba(255, 255, 255, 0.1);
-    }
-
-    /* ----------- MENU BURGER (mobile) ----------- */
-
-    .menu-toggle {
-      display: none;
-      position: absolute;
-      top: 20px;
-      left: 20px;
-      width: 30px;
-      height: 22px;
-      cursor: pointer;
-      flex-direction: column;
-      justify-content: space-between;
-      z-index: 1000;
-    }
-
-    .menu-toggle span {
-      display: block;
-      height: 4px;
-      width: 100%;
-      background: #f7f7f7;
-      border-radius: 2px;
-      transition: 0.3s;
-    }
-
-    /* Responsive */
-
-    @media (max-width: 600px) {
-      .nav-links {
-        position: fixed;
-        top: 0;
-        left: 0;
-        height: 100vh;
-        width: 200px;
-        background: #111228;
-        flex-direction: column;
-        padding-top: 60px;
-        gap: 24px;
-        transform: translateX(-220px);
-        transition: transform 0.3s ease;
-        box-shadow: 2px 0 12px rgba(0,0,0,0.8);
-      }
-
-      .nav-links.open {
-        transform: translateX(0);
-      }
-
-      .menu-toggle {
-        display: flex;
-      }
-
-      .header-box h1 {
-        margin-top: 40px;
-      }
-    }
-
     /* Galerie */
-
     .gallery {
       width: 100%;
       max-width: 1400px;
@@ -163,13 +108,20 @@
       display: block;
       cursor: pointer;
       margin: 15px 0;
-      border-radius: 6px; /* coins arrondis, tu peux mettre 0 */
+      border-radius: 6px; /* coins arrondis */
     }
 
+    /* Responsive */
     @media (max-width: 900px) {
       .gallery {
         max-width: 98vw;
         padding: 0 2vw;
+      }
+      .header-container {
+        justify-content: center;
+      }
+      .nav-menu {
+        gap: 15px;
       }
     }
 
@@ -186,22 +138,17 @@
   </style>
 </head>
 <body>
-  <div class="header-box">
-    <!-- Bouton burger mobile -->
-    <div class="menu-toggle" id="menu-toggle" aria-label="Ouvrir le menu" role="button" tabindex="0">
-      <span></span>
-      <span></span>
-      <span></span>
-    </div>
-
-    <nav class="nav-links" id="nav-links">
+  <div class="header-container">
+    <nav class="nav-menu">
       <a href="index.html">Accueil</a>
-      <a href="galerie.html">Galerie</a>
       <a href="contact.html">Contact</a>
+      <!-- Tu peux ajouter d'autres liens ici -->
     </nav>
 
-    <h1>CATRICE</h1>
-    <div class="subtitle">Bienvenue dans ma galerie&nbsp;!</div>
+    <div class="header-box">
+      <h1>CATRICE</h1>
+      <div class="subtitle">Bienvenue dans ma galerie&nbsp;!</div>
+    </div>
   </div>
 
   <div class="gallery" id="gallery">
@@ -230,22 +177,6 @@
         else if (img.msRequestFullscreen) img.msRequestFullscreen();
       };
       gallery.appendChild(img);
-    });
-
-    // Gestion menu burger mobile
-    const menuToggle = document.getElementById('menu-toggle');
-    const navLinks = document.getElementById('nav-links');
-
-    menuToggle.addEventListener('click', () => {
-      navLinks.classList.toggle('open');
-    });
-
-    // Accessibilité clavier : toggle menu avec Entrée ou Espace
-    menuToggle.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter' || e.key === ' ') {
-        e.preventDefault();
-        navLinks.classList.toggle('open');
-      }
     });
   </script>
 </body>
