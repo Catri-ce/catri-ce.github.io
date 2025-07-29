@@ -100,6 +100,7 @@
         opacity 0.3s;
       opacity: 1;
       z-index: 2;
+      flex-shrink: 0;
     }
     .carousel-slide.current {
       max-width: 70vw;
@@ -131,6 +132,15 @@
     }
     .carousel-slide.next {
       margin-left: 2vw;
+    }
+    .carousel-slide.placeholder {
+      max-width: 11vw;
+      max-height: 16vh;
+      min-width: 70px;
+      min-height: 48px;
+      opacity: 0;
+      pointer-events: none;
+      user-select: none;
     }
     .carousel-slide img {
       display: block;
@@ -206,7 +216,7 @@
     @media (max-width: 900px) {
       .carousel-viewport { height: 55vh; min-height: 110px; }
       .carousel-slide.current { min-width: 60vw; }
-      .carousel-slide.prev, .carousel-slide.next {
+      .carousel-slide.prev, .carousel-slide.next, .carousel-slide.placeholder {
         min-width: 45px;
         min-height: 32px;
         max-width: 65px;
@@ -221,7 +231,7 @@
     @media (max-width: 600px) {
       .carousel-viewport { height: 34vh; min-height: 50px; }
       .carousel-slide.current { min-width: 40vw; }
-      .carousel-slide.prev, .carousel-slide.next {
+      .carousel-slide.prev, .carousel-slide.next, .carousel-slide.placeholder {
         min-width: 25px;
         min-height: 18px;
         max-width: 35px;
@@ -239,6 +249,23 @@
       overflow: hidden;
     }
     body { padding-top: 0; padding-bottom: 0; }
+    /* Fullscreen styles for image */
+    .fullscreen-img {
+      position: fixed !important;
+      top: 0 !important;
+      left: 0 !important;
+      width: 100vw !important;
+      height: 100vh !important;
+      max-width: 100vw !important;
+      max-height: 100vh !important;
+      object-fit: contain !important;
+      background: #000 !important;
+      z-index: 10000 !important;
+      margin: 0 !important;
+      border-radius: 0 !important;
+      box-shadow: none !important;
+      display: block !important;
+    }
   </style>
 </head>
 <body>
@@ -285,7 +312,8 @@
     function renderSlides() {
       track.innerHTML = '';
 
-      // Previous thumbnail
+      // Always three slots: prev | current | next (even if placeholders)
+      // Previous
       if (current > 0) {
         const prevSlide = document.createElement('div');
         prevSlide.className = 'carousel-slide prev';
@@ -297,14 +325,13 @@
         prevSlide.appendChild(img);
         track.appendChild(prevSlide);
       } else {
-        // Place holder to keep layout
+        // Placeholder to keep centering
         const prevSlide = document.createElement('div');
-        prevSlide.className = 'carousel-slide prev';
-        prevSlide.style.opacity = "0";
+        prevSlide.className = 'carousel-slide prev placeholder';
         track.appendChild(prevSlide);
       }
 
-      // Current big photo
+      // Current
       const currentSlide = document.createElement('div');
       currentSlide.className = 'carousel-slide current';
       const currentImg = document.createElement('img');
@@ -312,20 +339,14 @@
       currentImg.alt = images[current].alt;
       currentImg.tabIndex = 0;
       currentImg.setAttribute('aria-label', 'Photo affichée');
-      currentImg.onclick = () => {
-        // Plein écran fonctionnel, taille d'origine
-        if (currentImg.requestFullscreen) {
-          currentImg.requestFullscreen();
-        } else if (currentImg.webkitRequestFullscreen) {
-          currentImg.webkitRequestFullscreen();
-        } else if (currentImg.msRequestFullscreen) {
-          currentImg.msRequestFullscreen();
-        }
+      currentImg.onclick = (e) => {
+        e.preventDefault();
+        openFullscreen(currentImg);
       };
       currentSlide.appendChild(currentImg);
       track.appendChild(currentSlide);
 
-      // Next thumbnail
+      // Next
       if (current < images.length - 1) {
         const nextSlide = document.createElement('div');
         nextSlide.className = 'carousel-slide next';
@@ -337,10 +358,9 @@
         nextSlide.appendChild(img);
         track.appendChild(nextSlide);
       } else {
-        // Place holder to keep layout
+        // Placeholder to keep centering
         const nextSlide = document.createElement('div');
-        nextSlide.className = 'carousel-slide next';
-        nextSlide.style.opacity = "0";
+        nextSlide.className = 'carousel-slide next placeholder';
         track.appendChild(nextSlide);
       }
 
@@ -375,6 +395,53 @@
       else if (dx < -60 && current < images.length - 1) goTo(current + 1);
       startX = null;
     });
+
+    // Fullscreen handling for image
+    function openFullscreen(img) {
+      // Create a new image to display fullscreen to avoid container/parent issues
+      const fsImg = document.createElement('img');
+      fsImg.src = img.src;
+      fsImg.alt = img.alt;
+      fsImg.className = 'fullscreen-img';
+      document.body.appendChild(fsImg);
+
+      function removeFsImg() {
+        document.removeEventListener('keydown', escHandler);
+        if (document.fullscreenElement || document.webkitFullscreenElement || document.msFullscreenElement) {
+          if (document.exitFullscreen) document.exitFullscreen();
+          else if (document.webkitExitFullscreen) document.webkitExitFullscreen();
+          else if (document.msExitFullscreen) document.msExitFullscreen();
+        }
+        fsImg.remove();
+      }
+      function escHandler(e) {
+        if (e.key === "Escape") removeFsImg();
+      }
+      fsImg.onclick = removeFsImg;
+      document.addEventListener('keydown', escHandler);
+
+      // Fullscreen API
+      if (fsImg.requestFullscreen) fsImg.requestFullscreen();
+      else if (fsImg.webkitRequestFullscreen) fsImg.webkitRequestFullscreen();
+      else if (fsImg.msRequestFullscreen) fsImg.msRequestFullscreen();
+
+      // Remove on fullscreen change (if user presses F11 or leaves fullscreen)
+      function onFsChange() {
+        if (
+          !document.fullscreenElement &&
+          !document.webkitFullscreenElement &&
+          !document.msFullscreenElement
+        ) {
+          fsImg.remove();
+          document.removeEventListener('fullscreenchange', onFsChange);
+          document.removeEventListener('webkitfullscreenchange', onFsChange);
+          document.removeEventListener('MSFullscreenChange', onFsChange);
+        }
+      }
+      document.addEventListener('fullscreenchange', onFsChange);
+      document.addEventListener('webkitfullscreenchange', onFsChange);
+      document.addEventListener('MSFullscreenChange', onFsChange);
+    }
 
     // Responsive: recalcule au redimensionnement
     window.addEventListener('resize', () => setTimeout(renderSlides, 50));
