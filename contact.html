@@ -16,12 +16,111 @@
       background: #000000;
       font-family: 'Montserrat', Arial, sans-serif;
       color: #f7f7f7;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      text-align: center;
-      padding: 20px;
       box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .header-box {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-top: 24px;
+      margin-bottom: 20px;
+      gap: 2px;
+      user-select: none;
+    }
+
+    h1 {
+      margin: 0;
+      font-weight: 700;
+      font-size: 2.15rem;
+      letter-spacing: 0.01em;
+      color: #f7f7f7;
+      line-height: 1.1;
+      text-shadow: 0 1px 10px #0004;
+      text-transform: uppercase;
+    }
+
+    .nav-links {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      display: flex;
+      gap: 16px;
+      font-weight: 500;
+    }
+
+    .nav-links a {
+      color: #f7f7f7;
+      text-decoration: none;
+      font-size: 0.95rem;
+      padding: 6px 10px;
+      border-radius: 6px;
+      transition: background 0.2s;
+      user-select: none;
+    }
+
+    .nav-links a:hover {
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    .menu-toggle {
+      display: none;
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      width: 30px;
+      height: 22px;
+      cursor: pointer;
+      flex-direction: column;
+      justify-content: space-between;
+      z-index: 1000;
+    }
+
+    .menu-toggle span {
+      display: block;
+      height: 4px;
+      width: 100%;
+      background: #f7f7f7;
+      border-radius: 2px;
+      transition: 0.3s;
+    }
+
+    @media (max-width: 600px) {
+      .nav-links {
+        position: fixed;
+        top: 0;
+        left: 0;
+        height: 100vh;
+        width: 200px;
+        background: #111228;
+        flex-direction: column;
+        padding-top: 60px;
+        gap: 24px;
+        transform: translateX(-220px);
+        transition: transform 0.3s ease;
+        box-shadow: 2px 0 12px rgba(0,0,0,0.8);
+      }
+
+      .nav-links.open {
+        transform: translateX(0);
+      }
+
+      .menu-toggle {
+        display: flex;
+      }
+
+      .header-box h1 {
+        margin-top: 40px;
+        font-size: 1.4rem;
+      }
     }
 
     .contact-box {
@@ -33,15 +132,7 @@
       line-height: 1.5;
       font-size: 1.1rem;
       user-select: text;
-    }
-
-    h1 {
-      margin-bottom: 20px;
-      font-weight: 700;
-      font-size: 2rem;
-      letter-spacing: 0.05em;
-      text-transform: uppercase;
-      text-shadow: 0 1px 6px #0004;
+      text-align: center;
     }
 
     @media (max-width: 600px) {
@@ -49,14 +140,27 @@
         padding: 20px 25px;
         font-size: 1rem;
       }
-
-      h1 {
-        font-size: 1.5rem;
-      }
     }
   </style>
 </head>
 <body>
+  <div class="header-box">
+    <!-- Bouton burger mobile -->
+    <div class="menu-toggle" id="menu-toggle" aria-label="Ouvrir le menu" role="button" tabindex="0">
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+
+    <nav class="nav-links" id="nav-links">
+      <a href="index.html">Accueil</a>
+      <a href="galerie.html">Galerie</a>
+      <a href="contact.html">Contact</a>
+    </nav>
+
+    <h1>CATRICE</h1>
+  </div>
+
   <div class="contact-box">
     <h1>Contact</h1>
     <p>
@@ -69,5 +173,22 @@
       <a href="https://soundcloud.com/user-649198552" target="_blank" style="color:#9aa0c4; text-decoration:none;">Soundcloud</a>
     </p>
   </div>
+
+  <script>
+    // Menu burger mobile
+    const menuToggle = document.getElementById('menu-toggle');
+    const navLinks = document.getElementById('nav-links');
+
+    menuToggle.addEventListener('click', () => {
+      navLinks.classList.toggle('open');
+    });
+
+    menuToggle.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        navLinks.classList.toggle('open');
+      }
+    });
+  </script>
 </body>
 </html>
