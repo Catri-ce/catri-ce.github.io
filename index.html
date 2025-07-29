@@ -305,12 +305,10 @@
       {
         src: "https://raw.githubusercontent.com/Catri-ce/catri-ce.github.io/main/_MG_8530.jpg",
         alt: "Photo 4"
-      }
       },
       {
         src: "https://raw.githubusercontent.com/Catri-ce/catri-ce.github.io/main/_MG_8707.jpg",
         alt: "Photo 5"
-      }
       },
       {
         src: "https://raw.githubusercontent.com/Catri-ce/catri-ce.github.io/main/_MG_9061.jpg",
@@ -412,7 +410,7 @@
 
     // Fullscreen handling for image
     function openFullscreen(img) {
-      // Create a new image to display fullscreen to avoid container/parent issues
+      // Use Fullscreen API on a new image element, to ensure it covers the viewport
       const fsImg = document.createElement('img');
       fsImg.src = img.src;
       fsImg.alt = img.alt;
