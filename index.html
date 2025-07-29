@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8">
   <title>CATRICE — Galerie</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
   <!-- Montserrat Google Fonts -->
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat:400,600&display=swap" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat:400,600&display=swap">
+
   <style>
     html, body {
       height: 100%;
@@ -15,18 +17,7 @@
       font-family: 'Montserrat', Arial, sans-serif;
     }
 
-    body {
-      min-height: 100vh;
-      margin: 0;
-      display: flex;
-      flex-direction: column;
-      align-items: stretch;
-    }
-
-    /* ----------- HEADER ----------- */
-
     .header-box {
-      position: relative; /* important pour positionner nav */
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -62,131 +53,79 @@
       text-shadow: 0 1px 6px #0003;
     }
 
-    /* ----------- NAVIGATION ----------- */
-
-    /* Conteneur menu */
-    .nav-links {
-      position: absolute;
-      top: 20px;
-      left: 20px;
-      display: flex;
-      gap: 16px;
-      font-weight: 500;
-    }
-
-    /* Liens du menu */
-    .nav-links a {
-      color: #f7f7f7;
-      text-decoration: none;
-      font-size: 0.95rem;
-      padding: 6px 10px;
-      border-radius: 6px;
-      transition: background 0.2s;
-      user-select: none;
-    }
-
-    .nav-links a:hover {
-      background: rgba(255, 255, 255, 0.1);
-    }
-
-    /* ----------- MENU BURGER (mobile) ----------- */
-
-    /* Cacher le menu burger par défaut */
-    .menu-toggle {
-      display: none;
-      position: absolute;
-      top: 20px;
-      left: 20px;
-      width: 30px;
-      height: 22px;
-      cursor: pointer;
-      flex-direction: column;
-      justify-content: space-between;
-      z-index: 1000;
-    }
-
-    /* Les barres du burger */
-    .menu-toggle span {
-      display: block;
-      height: 4px;
+    .gallery {
       width: 100%;
-      background: #f7f7f7;
-      border-radius: 2px;
-      transition: 0.3s;
+      max-width: 1400px;
+      margin: 0 auto 30px auto;
+      padding: 0 8px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      box-sizing: border-box;
     }
 
-    /* Cacher nav-links et afficher burger sur petits écrans */
+    .gallery img {
+      width: 100%;
+      height: auto;
+      max-height: 76vh;
+      object-fit: contain;
+      display: block;
+      cursor: pointer;
+      margin: 15px 0;
+      border-radius: 6px; /* tu peux mettre 0 si tu veux des coins carrés */
+    }
+
+    @media (max-width: 900px) {
+      .gallery {
+        max-width: 98vw;
+        padding: 0 2vw;
+      }
+    }
+
     @media (max-width: 600px) {
-      .nav-links {
-        position: fixed;
-        top: 0;
-        left: 0;
-        height: 100vh;
-        width: 200px;
-        background: #111228;
-        flex-direction: column;
-        padding-top: 60px;
-        gap: 24px;
-        transform: translateX(-220px);
-        transition: transform 0.3s ease;
-        box-shadow: 2px 0 12px rgba(0,0,0,0.8);
-      }
+      h1 { font-size: 1.3rem; }
+      .subtitle { font-size: 0.98rem; }
+      .header-box { margin-top: 7px; }
 
-      /* Quand menu ouvert */
-      .nav-links.open {
-        transform: translateX(0);
-      }
-
-      /* Affiche le burger */
-      .menu-toggle {
-        display: flex;
-      }
-
-      /* Déplace un peu le titre pour pas qu’il soit caché */
-      .header-box h1 {
-        margin-top: 40px;
+      .gallery img {
+        margin: 6px 0;
+        border-radius: 4px;
       }
     }
   </style>
 </head>
 <body>
   <div class="header-box">
-    <!-- Bouton burger mobile -->
-    <div class="menu-toggle" id="menu-toggle" aria-label="Ouvrir le menu" role="button" tabindex="0">
-      <span></span>
-      <span></span>
-      <span></span>
-    </div>
-
-    <nav class="nav-links" id="nav-links">
-      <a href="index.html">Accueil</a>
-      <a href="galerie.html">Galerie</a>
-      <a href="contact.html">Contact</a>
-    </nav>
-
     <h1>CATRICE</h1>
     <div class="subtitle">Bienvenue dans ma galerie&nbsp;!</div>
   </div>
 
   <div class="gallery" id="gallery">
-    <!-- Les photos s'affichent ici -->
+    <!-- Les images seront injectées ici -->
   </div>
 
   <script>
-    // Gestion menu burger mobile
-    const menuToggle = document.getElementById('menu-toggle');
-    const navLinks = document.getElementById('nav-links');
+    const images = [
+      { src: "https://raw.githubusercontent.com/Catri-ce/catri-ce.github.io/main/_MG_8401.jpg" },
+      { src: "https://raw.githubusercontent.com/Catri-ce/catri-ce.github.io/main/_MG_8801.jpg" },
+      { src: "https://raw.githubusercontent.com/Catri-ce/catri-ce.github.io/main/_MG_8193.jpg" },
+      { src: "https://raw.githubusercontent.com/Catri-ce/catri-ce.github.io/main/_MG_8530.jpg" },
+      { src: "https://raw.githubusercontent.com/Catri-ce/catri-ce.github.io/main/_MG_8707.jpg" },
+      { src: "https://raw.githubusercontent.com/Catri-ce/catri-ce.github.io/main/_MG_9061.jpg" }
+    ];
 
-    menuToggle.addEventListener('click', () => {
-      navLinks.classList.toggle('open');
-    });
+    const gallery = document.getElementById('gallery');
 
-    // Accessibilité clavier : toggle menu avec Entrée ou Espace
-    menuToggle.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter' || e.key === ' ') {
-        e.preventDefault();
-        navLinks.classList.toggle('open');
-      }
+    images.forEach(imgData => {
+      const img = document.createElement('img');
+      img.src = imgData.src;
+      img.alt = imgData.alt || '';
+      img.onclick = () => {
+        if (img.requestFullscreen) img.requestFullscreen();
+        else if (img.webkitRequestFullscreen) img.webkitRequestFullscreen();
+        else if (img.msRequestFullscreen) img.msRequestFullscreen();
+      };
+      gallery.appendChild(img);
     });
   </script>
 </body>
