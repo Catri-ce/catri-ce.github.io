@@ -4,8 +4,8 @@
   <meta charset="UTF-8">
   <title>CATRICE — Galerie</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <!-- Fonts Apple SF Pro, Roboto, Segoe UI, Arial fallback -->
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500&display=swap">
+  <!-- Montserrat Google Fonts -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat:400,600&display=swap">
   <style>
     html, body {
       height: 100%;
@@ -15,11 +15,7 @@
       overflow: hidden;
     }
     body {
-      font-family: 
-        -apple-system, BlinkMacSystemFont, 
-        "Segoe UI", Roboto, Arial, 
-        "SF Pro Display", "SF Pro Text", 
-        sans-serif;
+      font-family: 'Montserrat', Arial, sans-serif;
       min-height: 100vh;
       margin: 0;
       display: flex;
@@ -27,24 +23,34 @@
       align-items: stretch;
       overflow: hidden;
     }
+    .header-box {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-top: 24px;
+      margin-bottom: 10px;
+      gap: 2px;
+      user-select: none;
+    }
     h1, .subtitle {
       text-align: center;
-      font-weight: 400;
-      letter-spacing: 0.04em;
-      margin-top: 24px;
-      margin-bottom: 0;
+      margin: 0;
       font-family: inherit;
     }
     h1 {
-      font-size: 2.6rem;
       font-weight: 600;
-      letter-spacing: 0.02em;
-      margin-bottom: 10px;
+      font-size: 2.1rem;
+      letter-spacing: 0.01em;
+      color: #1a1a1a;
+      line-height: 1.1;
     }
     .subtitle {
-      font-size: 1.25rem;
-      color: #555;
-      margin-bottom: 18px;
+      color: #666;
+      font-size: 1.1rem;
+      font-weight: 400;
+      margin-top: 1px;
+      letter-spacing: 0.03em;
+      line-height: 1.18;
     }
     .carousel-container {
       flex: 1 1 auto;
@@ -75,40 +81,43 @@
     .carousel-slide {
       position: absolute;
       top: 0; left: 50%;
-      transform: translateX(-50%) scale(1);
       width: 92vw;
       max-width: 1150px;
       height: 100%;
       display: flex;
       align-items: center;
       justify-content: center;
-      opacity: 1;
-      transition: 
-        filter 0.52s cubic-bezier(.87,.15,.15,.91),
-        transform 0.67s cubic-bezier(.87,.15,.15,.91),
-        opacity 0.52s cubic-bezier(.87,.15,.15,.91);
-      z-index: 2;
       box-sizing: border-box;
       pointer-events: none;
+      opacity: 0;
+      z-index: 1;
+      /* Animation/transition for all properties */
+      transition:
+        filter 0.52s cubic-bezier(.87,.15,.15,.91),
+        transform 0.62s cubic-bezier(.77,.08,.24,1.07),
+        opacity 0.45s cubic-bezier(.77,.08,.24,1.07);
     }
     .carousel-slide.current {
       filter: none;
       z-index: 3;
       opacity: 1;
-      transform: translateX(-50%) scale(1);
       pointer-events: auto;
+      transform: translateX(-50%) scale(1);
+      transition-delay: 0.05s;
     }
     .carousel-slide.prev {
       filter: blur(11px) grayscale(0.6) brightness(0.93);
       opacity: 0.7;
-      transform: translateX(-90%) scale(0.84);
-      z-index: 1;
+      transform: translateX(-130%) scale(0.84);
+      z-index: 2;
+      transition-delay: 0s;
     }
     .carousel-slide.next {
       filter: blur(11px) grayscale(0.6) brightness(0.93);
       opacity: 0.7;
-      transform: translateX(-10%) scale(0.84);
-      z-index: 1;
+      transform: translateX(30%) scale(0.84);
+      z-index: 2;
+      transition-delay: 0s;
     }
     .carousel-slide img {
       display: block;
@@ -194,14 +203,16 @@
       .carousel-slide { width: 99vw; min-width: 60vw; }
       .carousel-arrow { width: 28px; height: 28px; }
       .carousel-arrow svg { width: 19px; height: 19px; stroke-width: 6px; }
-      h1 { font-size: 1.7rem; }
-      .subtitle { font-size: 1rem; }
+      h1 { font-size: 1.4rem; }
+      .subtitle { font-size: 0.98rem; }
+      .header-box { margin-top: 13px; }
     }
     @media (max-width: 600px) {
       .carousel-viewport { height: 34vh; min-height: 50px; }
       .carousel-slide { min-width: 40vw; }
       .carousel-arrow { width: 19px; height: 19px; }
       .carousel-arrow svg { width: 10px; height: 10px; stroke-width: 3px; }
+      .header-box { margin-top: 7px; }
     }
     .carousel-viewport, .carousel-container {
       margin-top: 0;
@@ -214,8 +225,10 @@
   </style>
 </head>
 <body>
-  <h1>CATRICE</h1>
-  <div class="subtitle">Bienvenue dans ma galerie&nbsp;!</div>
+  <div class="header-box">
+    <h1>CATRICE</h1>
+    <div class="subtitle">Bienvenue dans ma galerie&nbsp;!</div>
+  </div>
   <div class="carousel-container">
     <button class="carousel-arrow left" aria-label="Précédente">
       <svg viewBox="0 0 48 48" fill="none">
@@ -253,20 +266,26 @@
     const leftArrow = document.querySelector('.carousel-arrow.left');
     const rightArrow = document.querySelector('.carousel-arrow.right');
     let current = 0;
+    let sliding = false;
 
-    // Render function
-    function renderSlides() {
+    function renderSlides(direction = 0) {
+      // direction: -1 (left), 1 (right), 0 (instant)
+      // Clean previous slides
       viewport.innerHTML = '';
-      for (let i = 0; i < images.length; i++) {
+
+      // Create slides: prev, current, next (only these for animation perf)
+      const prevIdx = current - 1;
+      const nextIdx = current + 1;
+
+      // Helper to create slide at right position
+      function createSlide(idx, cls) {
+        if (idx < 0 || idx >= images.length) return;
         const slide = document.createElement('div');
-        slide.className = 'carousel-slide';
-        if (i === current) slide.classList.add('current');
-        if (i === current - 1) slide.classList.add('prev');
-        if (i === current + 1) slide.classList.add('next');
+        slide.className = 'carousel-slide ' + (cls || '');
         const img = document.createElement('img');
-        img.src = images[i].src;
-        img.alt = images[i].alt;
-        if (i === current) {
+        img.src = images[idx].src;
+        img.alt = images[idx].alt;
+        if (cls === 'current') {
           img.tabIndex = 0;
           img.setAttribute('aria-label', 'Photo affichée');
           img.onclick = () => {
@@ -278,19 +297,56 @@
         slide.appendChild(img);
         viewport.appendChild(slide);
       }
+
+      // Order: prev, current, next (for slide effect)
+      if (prevIdx >= 0) createSlide(prevIdx, 'prev');
+      createSlide(current, 'current');
+      if (nextIdx < images.length) createSlide(nextIdx, 'next');
+
+      // Slide effect
+      if (direction !== 0) {
+        sliding = true;
+        const slides = viewport.querySelectorAll('.carousel-slide');
+        slides.forEach(slide => {
+          slide.style.transition = 'none';
+        });
+        // Initial positions
+        if (direction === 1) { // right
+          slides.forEach(slide => {
+            if (slide.classList.contains('current')) slide.style.transform = 'translateX(100%) scale(1)';
+            if (slide.classList.contains('prev')) slide.style.transform = 'translateX(-50%) scale(0.84)';
+            if (slide.classList.contains('next')) slide.style.transform = 'translateX(130%) scale(0.84)';
+          });
+        } else if (direction === -1) { // left
+          slides.forEach(slide => {
+            if (slide.classList.contains('current')) slide.style.transform = 'translateX(-100%) scale(1)';
+            if (slide.classList.contains('prev')) slide.style.transform = 'translateX(-130%) scale(0.84)';
+            if (slide.classList.contains('next')) slide.style.transform = 'translateX(50%) scale(0.84)';
+          });
+        }
+        // Force reflow
+        void viewport.offsetWidth;
+        // Animate to final position
+        setTimeout(() => {
+          slides.forEach(slide => {
+            slide.style.transition = '';
+            slide.style.transform = '';
+          });
+          setTimeout(() => { sliding = false; }, 650); // duration matches CSS
+        }, 40);
+      }
       // Flèches activées/désactivées
-      if (current === 0) leftArrow.setAttribute('disabled', 'true');
-      else leftArrow.removeAttribute('disabled');
-      if (current === images.length - 1) rightArrow.setAttribute('disabled', 'true');
-      else rightArrow.removeAttribute('disabled');
-      // Compteur
+      leftArrow.toggleAttribute('disabled', current === 0);
+      rightArrow.toggleAttribute('disabled', current === images.length - 1);
       counter.textContent = `Photo ${current + 1} / ${images.length}`;
     }
 
     function goTo(idx) {
+      if (sliding) return;
       if (idx < 0 || idx >= images.length) return;
+      const dir = idx > current ? 1 : idx < current ? -1 : 0;
       current = idx;
-      renderSlides();
+      renderSlides(dir);
     }
 
     leftArrow.onclick = () => goTo(current - 1);
