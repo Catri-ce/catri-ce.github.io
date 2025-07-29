@@ -4,6 +4,8 @@
   <meta charset="UTF-8" />
   <title>CATRICE — Galerie</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <!-- Montserrat Google Fonts -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat:400,600&display=swap" />
 
   <style>
@@ -22,6 +24,125 @@
       flex-direction: column;
       align-items: stretch;
     }
+
+    .header-box {
+      position: relative; /* pour positionner la nav */
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-top: 24px;
+      margin-bottom: 10px;
+      gap: 2px;
+      user-select: none;
+    }
+
+    h1, .subtitle {
+      text-align: center;
+      margin: 0;
+      font-family: inherit;
+    }
+
+    h1 {
+      font-weight: 700;
+      font-size: 2.15rem;
+      letter-spacing: 0.01em;
+      color: #f7f7f7;
+      line-height: 1.1;
+      text-shadow: 0 1px 10px #0004;
+      text-transform: uppercase;
+    }
+
+    .subtitle {
+      color: #f7f7f7;
+      font-size: 1.1rem;
+      font-weight: 400;
+      margin-top: 1px;
+      letter-spacing: 0.03em;
+      line-height: 1.18;
+      text-shadow: 0 1px 6px #0003;
+    }
+
+    /* ----------- NAVIGATION ----------- */
+
+    .nav-links {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      display: flex;
+      gap: 16px;
+      font-weight: 500;
+    }
+
+    .nav-links a {
+      color: #f7f7f7;
+      text-decoration: none;
+      font-size: 0.95rem;
+      padding: 6px 10px;
+      border-radius: 6px;
+      transition: background 0.2s;
+      user-select: none;
+    }
+
+    .nav-links a:hover {
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    /* ----------- MENU BURGER (mobile) ----------- */
+
+    .menu-toggle {
+      display: none;
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      width: 30px;
+      height: 22px;
+      cursor: pointer;
+      flex-direction: column;
+      justify-content: space-between;
+      z-index: 1000;
+    }
+
+    .menu-toggle span {
+      display: block;
+      height: 4px;
+      width: 100%;
+      background: #f7f7f7;
+      border-radius: 2px;
+      transition: 0.3s;
+    }
+
+    /* Responsive */
+
+    @media (max-width: 600px) {
+      .nav-links {
+        position: fixed;
+        top: 0;
+        left: 0;
+        height: 100vh;
+        width: 200px;
+        background: #111228;
+        flex-direction: column;
+        padding-top: 60px;
+        gap: 24px;
+        transform: translateX(-220px);
+        transition: transform 0.3s ease;
+        box-shadow: 2px 0 12px rgba(0,0,0,0.8);
+      }
+
+      .nav-links.open {
+        transform: translateX(0);
+      }
+
+      .menu-toggle {
+        display: flex;
+      }
+
+      .header-box h1 {
+        margin-top: 40px;
+      }
+    }
+
+    /* Galerie */
 
     .gallery {
       width: 100%;
@@ -42,7 +163,7 @@
       display: block;
       cursor: pointer;
       margin: 15px 0;
-      border-radius: 6px;
+      border-radius: 6px; /* coins arrondis, tu peux mettre 0 */
     }
 
     @media (max-width: 900px) {
@@ -53,6 +174,10 @@
     }
 
     @media (max-width: 600px) {
+      h1 { font-size: 1.3rem; }
+      .subtitle { font-size: 0.98rem; }
+      .header-box { margin-top: 7px; }
+
       .gallery img {
         margin: 6px 0;
         border-radius: 4px;
@@ -61,35 +186,29 @@
   </style>
 </head>
 <body>
-  <!-- Menu partagé chargé dynamiquement -->
-  <div id="shared-header"></div>
+  <div class="header-box">
+    <!-- Bouton burger mobile -->
+    <div class="menu-toggle" id="menu-toggle" aria-label="Ouvrir le menu" role="button" tabindex="0">
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
 
-  <div class="gallery" id="gallery"></div>
+    <nav class="nav-links" id="nav-links">
+      <a href="index.html">Accueil</a>
+      <a href="galerie.html">Galerie</a>
+      <a href="contact.html">Contact</a>
+    </nav>
+
+    <h1>CATRICE</h1>
+    <div class="subtitle">Bienvenue dans ma galerie&nbsp;!</div>
+  </div>
+
+  <div class="gallery" id="gallery">
+    <!-- Les images seront injectées ici -->
+  </div>
 
   <script>
-    // Chargement dynamique du menu
-    fetch('header.html')
-      .then(response => response.text())
-      .then(html => {
-        document.getElementById('shared-header').innerHTML = html;
-
-        // Activation du menu burger après chargement
-        const menuToggle = document.getElementById('menu-toggle');
-        const navLinks = document.getElementById('nav-links');
-
-        menuToggle.addEventListener('click', () => {
-          navLinks.classList.toggle('open');
-        });
-
-        menuToggle.addEventListener('keydown', (e) => {
-          if (e.key === 'Enter' || e.key === ' ') {
-            e.preventDefault();
-            navLinks.classList.toggle('open');
-          }
-        });
-      });
-
-    // Galerie d'images
     const images = [
       { src: "https://raw.githubusercontent.com/Catri-ce/catri-ce.github.io/main/_MG_8401.jpg" },
       { src: "https://raw.githubusercontent.com/Catri-ce/catri-ce.github.io/main/_MG_8801.jpg" },
@@ -111,6 +230,22 @@
         else if (img.msRequestFullscreen) img.msRequestFullscreen();
       };
       gallery.appendChild(img);
+    });
+
+    // Gestion menu burger mobile
+    const menuToggle = document.getElementById('menu-toggle');
+    const navLinks = document.getElementById('nav-links');
+
+    menuToggle.addEventListener('click', () => {
+      navLinks.classList.toggle('open');
+    });
+
+    // Accessibilité clavier : toggle menu avec Entrée ou Espace
+    menuToggle.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        navLinks.classList.toggle('open');
+      }
     });
   </script>
 </body>
