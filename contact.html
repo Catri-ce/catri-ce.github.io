@@ -23,7 +23,16 @@
       align-items: stretch;
     }
 
-    /* Suppression de .header-box, h1 et .subtitle car non utilisés */
+    .header-box {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-top: 24px;
+      margin-bottom: 10px;
+      gap: 2px;
+      user-select: none;
+    }
 
     .nav-links {
       position: absolute;
@@ -121,7 +130,7 @@
   </style>
 </head>
 <body>
-  <!-- Emplacement du menu partagé -->
+  <!-- Menu partagé -->
   <div id="shared-header"></div>
 
   <div class="contact-container">
@@ -140,7 +149,7 @@
   </div>
 
   <script>
-    // Charge le menu partagé
+    // Charger le menu partagé
     fetch('header.html')
       .then(response => response.text())
       .then(html => {
